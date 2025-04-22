@@ -147,6 +147,9 @@ pub enum Expression {
     Intersect(Metadata, Box<Expression>, Box<Expression>),
 
     #[compatible(JsonInput)]
+    Subset(Metadata, Box<Expression>, Box<Expression>),
+
+    #[compatible(JsonInput)]
     SubsetEq(Metadata, Box<Expression>, Box<Expression>),
 
     #[compatible(JsonInput)]
@@ -463,6 +466,7 @@ impl Expression {
                 SetAttr::None,
                 Box::new(a.domain_of(syms)?.intersect(&b.domain_of(syms)?)?),
             )),
+            Expression::Subset(_, _, _) => Some(Domain::BoolDomain),
             Expression::SubsetEq(_, _, _) => Some(Domain::BoolDomain),
 
             //todo
@@ -695,6 +699,7 @@ impl Expression {
             Expression::Intersect(_, subject, _) => {
                 Some(ReturnType::Set(Box::new(subject.return_type()?)))
             }
+            Expression::Subset(_, _, _) => Some(ReturnType::Bool),
             Expression::SubsetEq(_, _, _) => Some(ReturnType::Bool),
 
             Expression::AbstractLiteral(_, _) => None,
@@ -922,6 +927,9 @@ impl Display for Expression {
             }
             Expression::Intersect(_, box1, box2) => {
                 write!(f, "({} intersect {})", box1.clone(), box2.clone())
+            }
+            Expression::Subset(_, box1, box2) => {
+                write!(f, "({} subset {})", box1.clone(), box2.clone())
             }
             Expression::SubsetEq(_, box1, box2) => {
                 write!(f, "({} subsetEq {})", box1.clone(), box2.clone())

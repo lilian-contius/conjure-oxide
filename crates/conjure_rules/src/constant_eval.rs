@@ -33,6 +33,7 @@ pub fn eval_constant(expr: &Expr) -> Option<Lit> {
         // TODO: need to specify for subsetEq + intersection + union
         Expr::Union(_, _, _) => None,
         Expr::Intersect(_, _, _) => None,
+        Expr::Subset(_, _, _) => None,
         Expr::SubsetEq(_, _, _) => None,
 
         Expr::FromSolution(_, _) => None,
